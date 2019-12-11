@@ -12,7 +12,10 @@ import com.thaiopensource.resolver.xml.ExternalIdentifier;
 import com.thaiopensource.resolver.xml.sax.SAXResolver;
 import org.apache.xml.resolver.Catalog;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -39,7 +42,13 @@ public class CatalogResolver extends AbstractResolver {
   public CatalogResolver(List<String> catalogUris) {
     this(catalogUris, new SAXResolver());
   }
-  
+
+  @Override
+  public void open(Input input) throws IOException, ResolverException {
+    // open input (dtd) as a file
+    input.setCharacterStream(new FileReader(new File(URI.create(input.getUri()))));
+  }
+
   public synchronized void resolve(Identifier id, Input input) throws IOException, ResolverException {
     if (input.isResolved())
       return;
